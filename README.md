@@ -4,12 +4,14 @@
 
 ### 🔍 학습 내용
 -  구글맵 API를 사용해서 검색결과에 맞는 장소명과 주소 목록 리스트를 띄우기 
--  화면에 위치가 어디인지 지도 띄우기
+-  화면에 위치가 어디인지 지도를 띄워서 마커 표시하기
 
 ### 💻 실습
 #### 1. 네트워크 통신하기 위해 연결시키는 코드 작성
 -  NetworkClient.java 클래스 파일 참고하기
 -  앞으로 통신할때마다 복붙해서 가져다 사용하면 됨
+
+<br>
 
 #### 2. 검색하기
 -  먼저 핸드폰의 위치를 가져오기 위해, 시스템 서비스로부터 <b> locationManager </b>를 받아오기
@@ -26,7 +28,7 @@
                 isLocationReady = true; 
             }
         };
-
+<br>
 -  앱 실행 시, <b> 위치 기반 서비스 권한 수락받기 </b>
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this,
@@ -46,6 +48,7 @@
                 -1,
                 locationListener); // 3초마다 위치 찍기
 
+<br>
 -  검색 버튼을 클릭하면, <b> isLocationReady이 true 인지 확인</b>하고 아니라면 Snackbar 띄우기(예외처리)
 -  true라면 keyword 변수에 입력한 검색어 저장하기
 
@@ -71,6 +74,7 @@
             }
         });
 
+<br>
 -  <b> getNetworkData </b>에서 <b> Retrofit api </b>를 실행하기
 
    <b> Call </b>해서 받아온 결과값들을 <b> placeArrayList에 넣고, adapter를 실행 </b>시킨다
@@ -112,6 +116,7 @@
 
             }
         });
+<br>
 
 #### 3. PlaceAdapter
 -  <b> placeArrayList </b>는 model 파일에 있는 <b> Place 클래스 파일</b>의 값을 갖고 있음
@@ -152,4 +157,27 @@
             });
 
 #### 4. MapActivity
--  
+-  PlaceAdapter가 보낸 place 정보를 받아오고, 위도와 경도값을 가지고 마커로 표시하기
+
+         place = (Place) getIntent().getSerializableExtra("place");
+         mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap) {
+                // 유저가 누른 플레이스의 위도, 경도 값을 가지고, 마커로 표시하기
+                // 해당 플레이스의 정보는 어뎁터에게 받았음
+
+                double lat = place.geometry.location.lat;
+                double lng = place.geometry.location.lng;
+
+                // 맵이 화면에 나타나는 부분
+                LatLng latLng = new LatLng(lat, lng);  // 위도, 경도값 가져온거 여기에 넣기
+
+                // 지도의 중심을 내가 정한 위치로 세팅
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+
+                // 마커를 만들어서 지도에 표시
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng).title(place.name);  // 장소 이름 가져온거 여기에 넣기
+                googleMap.addMarker(markerOptions).setTag(0);  // 화면에 표시, 태그 달기
+            }
+        });
