@@ -155,9 +155,10 @@
                     context.startActivity(intent);
                 }
             });
+<br>
 
 #### 4. MapActivity
--  PlaceAdapter가 보낸 place 정보를 받아오고, 위도와 경도값을 가지고 마커로 표시하기
+-  <b> PlaceAdapter가 보낸 place 정보를 받아오고 </b>, 위도와 경도값을 가지고 마커로 표시하기
 
          place = (Place) getIntent().getSerializableExtra("place");
          mapFragment.getMapAsync(new OnMapReadyCallback() {
