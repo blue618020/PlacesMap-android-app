@@ -29,6 +29,7 @@
             }
         };
 <br>
+
 -  앱 실행 시, <b> 위치 기반 서비스 권한 수락받기 </b>
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this,
@@ -49,6 +50,7 @@
                 locationListener); // 3초마다 위치 찍기
 
 <br>
+
 -  검색 버튼을 클릭하면, <b> isLocationReady이 true 인지 확인</b>하고 아니라면 Snackbar 띄우기(예외처리)
 -  true라면 keyword 변수에 입력한 검색어 저장하기
 
@@ -75,6 +77,7 @@
         });
 
 <br>
+
 -  <b> getNetworkData </b>에서 <b> Retrofit api </b>를 실행하기
 
    <b> Call </b>해서 받아온 결과값들을 <b> placeArrayList에 넣고, adapter를 실행 </b>시킨다
@@ -116,6 +119,7 @@
 
             }
         });
+   
 <br>
 
 #### 3. PlaceAdapter
@@ -137,9 +141,9 @@
             holder.txtVicinity.setText("주소 없음");
         }else {
             holder.txtVicinity.setText(place.vicinity); // 주소
-        }
-    }
-   
+           }
+       }
+
 -  화면에서 검색 결과가 뜬 카드뷰를 눌렀을 때, <b> 몇번째 카드뷰를 눌렀는지 확인하고 MapActivity에게 정보를 보내주기</b>
 
          cardView.setOnClickListener(new View.OnClickListener() {
