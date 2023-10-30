@@ -7,9 +7,14 @@
 -  화면에 위치가 어디인지 지도 띄우기
 
 ### 💻 실습
--  핸드폰의 위치를 가져오기 위해, 시스템 서비스로부터 locationManager를 받아오기
+#### 1. 네트워크 통신하기 위해 연결시키는 코드 작성
+-  NetworkClient.java 클래스 파일 참고하기
+-  앞으로 통신할때마다 복붙해서 가져다 사용하면 됨
 
-   그리고 실시간으로 위치를 잡기 위해 locationListener를 만들기
+#### 2. 검색하기
+-  먼저 핸드폰의 위치를 가져오기 위해, 시스템 서비스로부터 <b> locationManager </b>를 받아오기
+
+   그리고 실시간으로 위치를 잡기 위해 <b> locationListener </b>를 만들기
 
        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -22,7 +27,7 @@
             }
         };
 
--  앱 실행 시, 위치 기반 서비스 권한 수락받기
+-  앱 실행 시, <b> 위치 기반 서비스 권한 수락받기 </b>
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -41,7 +46,7 @@
                 -1,
                 locationListener); // 3초마다 위치 찍기
 
--  검색 버튼을 클릭하면, isLocationReady이 true 인지 확인하고 아니라면 Snackbar 띄우기(예외처리)
+-  검색 버튼을 클릭하면, <b> isLocationReady이 true 인지 확인</b>하고 아니라면 Snackbar 띄우기(예외처리)
 -  true라면 keyword 변수에 입력한 검색어 저장하기
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -66,9 +71,9 @@
             }
         });
 
--  getNetworkData에서 Retrofit api를 실행하기
+-  <b> getNetworkData </b>에서 <b> Retrofit api </b>를 실행하기
 
-  Call 해서 받아온 결과값들을 placeArrayList에 넣고, adapter를 실행시킨다
+   <b> Call </b>해서 받아온 결과값들을 <b> placeArrayList에 넣고, adapter를 실행 </b>시킨다
 
         private void getNetworkData() {
         // 리스트 초기화
@@ -107,3 +112,44 @@
 
             }
         });
+
+#### 3. PlaceAdapter
+-  <b> placeArrayList </b>는 model 파일에 있는 <b> Place 클래스 파일</b>의 값을 갖고 있음
+-  <b> onBindViewHolder </b> 부분에서 <b> holder </b>를 사용하여 값을 넣어 화면에 보여주기
+
+        @Override
+        public void onBindViewHolder(@NonNull PlaceAdapter.ViewHolder holder, int position) {
+        Place place = placeArrayList.get(position);
+
+        // 장소와 주소 이름이 없을 때를 대비하는 예외처리
+        if (place.name == null){
+            holder.txtName.setText("상점명 없음");
+        }else {
+            holder.txtName.setText(place.name); // 장소이름
+        }
+
+        if (place.vicinity == null){
+            holder.txtVicinity.setText("주소 없음");
+        }else {
+            holder.txtVicinity.setText(place.vicinity); // 주소
+        }
+    }
+   
+-  화면에서 검색 결과가 뜬 카드뷰를 눌렀을 때, <b> 몇번째 카드뷰를 눌렀는지 확인하고 MapActivity에게 정보를 보내주기</b>
+
+         cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 몇번째 카드뷰를 눌렀는지 확인
+                    int index = getAdapterPosition();
+                    Place place = placeArrayList.get(index);
+
+                    // 맵 액티비티에게 보내주기
+                    Intent intent = new Intent(context, MapActivity.class);
+                    intent.putExtra("place", place);
+                    context.startActivity(intent);
+                }
+            });
+
+#### 4. MapActivity
+-  
